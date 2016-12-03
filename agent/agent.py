@@ -1,11 +1,16 @@
-import tensorflow as tf
-import agent.history
+import agent.history as ah
 
 
 class Agent:
-	def __init__(self, env, sess, device):
-		self.sess = sess
-		self.env = env
-		self.device = device
+    def __init__(self, env, sess, config):
+        self.config = config
+        self.sess = sess
+        self.env = env
 
-		self.history = agent.history.History()
+        self.x_t = self.env.reset()
+
+        self.history = ah.History(config=self.config,
+                                  x_t_init=self.x_t)
+
+
+
