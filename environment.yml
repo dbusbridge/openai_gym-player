@@ -1,0 +1,10 @@
+name: tensorflow_12_gpu_gym
+dependencies:
+  - python>=3.5
+  - nomkl
+  - numpy
+  - pyopengl
+  - pip
+  - pip:
+    - "gym[all]"
+    - https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-0.12.0rc0-cp35-cp35m-linux_x86_64.whl
