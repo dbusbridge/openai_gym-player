@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This repo contains code that trains a reinforcement learning algorithm on the [openaigym](https://gym.openai.com) environment [SpaceInvaders-v0](https://gym.openai.com/envs/SpaceInvaders-v0).
+This repo contains code that trains a reinforcement learning algorithm on the [OpenAI Gym](https://gym.openai.com) environment [SpaceInvaders-v0](https://gym.openai.com/envs/SpaceInvaders-v0).
 
 ## Environment details
 
