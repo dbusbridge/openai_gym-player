@@ -11,6 +11,3 @@ class Agent:
 
         self.history = ah.History(config=self.config,
                                   x_t_init=self.x_t)
-
-
-
