@@ -19,7 +19,7 @@ class Game(config.GameConfig):
         self.action_space_size = self.action_space.n
 
         # Initialise the game
-        self.screen = self.reset()
+        self.screen, self.reward, self.terminal, self.info = self.new_game()
 
         # Initialise other variables
         self.reward = 0
@@ -31,6 +31,13 @@ class Game(config.GameConfig):
         if self.do_render:
             cv2.startWindowThread()
             cv2.namedWindow(winname=self.env_name)
+
+    def new_game(self):
+        self.reset()
+        self.reward = 0
+        self.terminal = False
+        self.info = None
+        return self.screen, self.reward, self.terminal, self.info
 
     def render_grid(self):
         plt.subplot(231), plt.imshow(
@@ -46,7 +53,7 @@ class Game(config.GameConfig):
             self.screen_binary(), 'gray'), plt.title('Binary')
 
     def reset(self):
-        return self.env.reset()
+        self.env.reset()
 
     def screen_bgr(self):
         return cv2.cvtColor(self.screen, cv2.COLOR_RGB2BGR)

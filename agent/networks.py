@@ -12,8 +12,8 @@ def multilayer_convnet(device='/cpu:0'):
     """
     with tf.device(device_name_or_function=device):
         # Placeholders for feed and output
-        x = tf.placeholder(tf.float32, shape=[None, 784])
-        y_ = tf.placeholder(tf.float32, shape=[None, 10])
+        s = tf.placeholder(tf.float32, shape=[None, 784])
+        q = tf.placeholder(tf.float32, shape=[None, 10])
 
         # Reshape image for convolving
         x_image = tf.reshape(x, [-1, 28, 28, 1])
@@ -58,6 +58,6 @@ def multilayer_convnet(device='/cpu:0'):
         b_fc2 = nt.bias_variable([10])
 
         # Readout layer: perform linear transformation + bias with relu
-        y_conv = tf.matmul(h_fc1_drop, W_fc2) + b_fc2
+        q_conv = tf.matmul(h_fc1_drop, W_fc2) + b_fc2
 
-    return x, y_, y_conv, keep_prob
+    return s, q, q_conv, keep_prob
