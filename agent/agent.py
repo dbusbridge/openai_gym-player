@@ -42,9 +42,13 @@ class Agent(config.AgentConfig):
         self.ep_rewards = []
 
         # Neural network
+        self.a = tf.placeholder("float", [None, self.game.action_space_size])
         self.s, self.q, self.q_conv, self.keep_prob = nw.multilayer_convnet()
-        self.q_action = tf.argmax(self.s)
-        self.cost = tf.reduce_mean(tf.square(self.q - self.q_conv))
+        self.q_action = tf.argmax(self.q_conv, dimension=1)
+
+        self.readout_action = tf.reduce_sum(tf.mul(self.q_conv, self.a),
+                                            reduction_indices=1)
+        self.cost = tf.reduce_mean(tf.square(self.q - self.readout_action))
         self.train_step = tf.train.AdamOptimizer(1e-6).minimize(self.cost)
 
     def q_learning_mini_batch(self):

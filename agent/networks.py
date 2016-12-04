@@ -16,7 +16,7 @@ def multilayer_convnet(device='/cpu:0'):
         q = tf.placeholder(tf.float32, shape=[None, 10])
 
         # Reshape image for convolving
-        x_image = tf.reshape(x, [-1, 28, 28, 1])
+        x_image = tf.reshape(s, [-1, 28, 28, 1])
 
         # First convolutional layer: convolution weights + bias
         W_conv1 = nt.weight_variable([5, 5, 1, 32])
