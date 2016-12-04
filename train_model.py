@@ -1,26 +1,26 @@
-import game as g
+import game
+import agent.agent as agent
+import tensorflow as tf
 
-# Set the environment
-CONFIG = {
-    'history_length': 4,
-    'environment': 'SpaceInvaders-v0',
-    'do_render': True
-}
+sess = tf.InteractiveSession()
 
 # Start the game
-game = g.Game(config=CONFIG)
+g = game.Game()
+
+# Start the agent
+a = agent.Agent(sess=sess, game=g)
 
 # Total reward
 total_reward = 0
 
-for i in range(2000):
-    game.render()
-    action = game.action_space.sample() # your agent here (this takes random actions)
-    game.step(action)
-    if game.reward != 0.0:
-        total_reward += game.reward
+for i in range(20000):
+    g.render()
+    action = g.action_space.sample() # your agent here (this takes random actions)
+    g.step(action)
+    if g .reward != 0.0:
+        total_reward += g .reward
         print("Gained {reward} points, total score: {total_reward}".format(
-            reward=game.reward,
+            reward=g.reward,
             total_reward=total_reward))
-    if game.done:
-        game.reset()
+    if g .done:
+        g.reset()

@@ -1,12 +1,13 @@
 import cv2
 import gym
 from matplotlib import pyplot as plt
+import config
 
 
-class Game:
-    def __init__(self, config):
+class Game(config.GameConfig):
+    def __init__(self):
         # Setup the environment according to config
-        self.env_name = config['environment']
+        self.env_name = config.GameConfig.environment
         self.env = gym.make(id=self.env_name)
 
         # Observation space
@@ -22,11 +23,11 @@ class Game:
 
         # Initialise other variables
         self.reward = 0
-        self.done = False
+        self.terminal = False
         self.info = None
 
         # Rendering
-        self.do_render = config['do_render']
+        self.do_render = config.GameConfig.do_render
         if self.do_render:
             cv2.startWindowThread()
             cv2.namedWindow(winname=self.env_name)
@@ -61,7 +62,8 @@ class Game:
         return screen_binary
 
     def step(self, action):
-        self.screen, self.reward, self.done, self.info = self.env.step(action)
+        self.screen, self.reward, self.terminal, self.info = self.env.step(
+            action)
         return self
 
     def render(self):
