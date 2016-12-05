@@ -71,7 +71,7 @@ class Game(config.GameConfig):
     def step(self, action):
         self.screen, self.reward, self.terminal, self.info = self.env.step(
             action)
-        return self
+        return self.screen, self.reward, self.terminal, self.info
 
     def render(self):
         cv2.imshow(winname=self.env_name,
