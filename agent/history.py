@@ -11,11 +11,12 @@ class History(config.AgentConfig):
         :param dict config: Dictionary of configuration parameters.
         :param np.array x_t_init: The first screen.
         """
+        self.history_length = config.AgentConfig.history_length
 
         # Create s_t_init, the initial s_t with 4 repeats of the start screen
         # taken from x_t_init
         self.s_t_init = np.stack(
-            arrays=(x_t_init, ) * config.AgentConfig.history_length,
+            arrays=(x_t_init, ) * self.history_length,
             axis=2)
 
         # Set s_t = s_t_init. These are seperate objects in case we need to

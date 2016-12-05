@@ -2,7 +2,9 @@ import agent.nettools as nt
 import tensorflow as tf
 
 
-def multilayer_convnet(device='/cpu:0'):
+def multilayer_convnet(input_layer_shape,
+                       output_layer_shape,
+                       device='/cpu:0'):
     """Create a multilayer convolutional neural network.
     :param str device: The device to use for storing variables and computation.
         Either '/cpu:<n>' or '/cpu:<n>'. Defaults to '/cpu:<n>.
@@ -12,8 +14,8 @@ def multilayer_convnet(device='/cpu:0'):
     """
     with tf.device(device_name_or_function=device):
         # Placeholders for feed and output
-        s = tf.placeholder(tf.float32, shape=[None, 784])
-        q = tf.placeholder(tf.float32, shape=[None, 10])
+        s = tf.placeholder(tf.float32, shape=input_layer_shape)
+        q = tf.placeholder(tf.float32, shape=output_layer_shape)
 
         # Reshape image for convolving
         x_image = tf.reshape(s, [-1, 28, 28, 1])

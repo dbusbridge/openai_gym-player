@@ -7,8 +7,6 @@ sess = tf.InteractiveSession()
 # Start the game
 g = game.Game()
 
-g.screen
-
 # Start the agent
 a = agent.Agent(sess=sess, game=g)
 

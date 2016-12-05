@@ -42,8 +42,14 @@ class Agent(config.AgentConfig):
         self.ep_rewards = []
 
         # Neural network
+        self.input_layer_shape = (
+            [None] + list(self.game.screen_binary().shape) +
+            [self.history.history_length])
+        self.output_layer_shape = [None] + [self.game.action_space_size]
         self.a = tf.placeholder("float", [None, self.game.action_space_size])
-        self.s, self.q, self.q_conv, self.keep_prob = nw.multilayer_convnet()
+        self.s, self.q, self.q_conv, self.keep_prob = nw.multilayer_convnet(
+            input_layer_shape=self.input_layer_shape,
+            output_layer_shape=self.output_layer_shape)
         self.q_action = tf.argmax(self.q_conv, dimension=1)
 
         self.readout_action = tf.reduce_sum(tf.mul(self.q_conv, self.a),
