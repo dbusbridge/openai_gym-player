@@ -24,8 +24,8 @@ class History(config.AgentConfig):
         self.s_t = self.s_t_init
 
     def add(self, observation):
-        self.s_t[:-1] = self.s_t[1:]
-        self.s_t[-1] = observation
+        self.s_t[:, :, :-1] = self.s_t[:, :, 1:]
+        self.s_t[:, :, -1] = observation
 
     def reset(self):
         self.s_t = self.s_t_init
