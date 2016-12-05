@@ -66,7 +66,7 @@ class Game(config.GameConfig):
             src=self.screen_grey(),
             thresh=1, maxval=255,
             type=cv2.THRESH_BINARY)
-        return screen_binary
+        return screen_binary / 255.
 
     def step(self, action):
         self.screen, self.reward, self.terminal, self.info = self.env.step(
