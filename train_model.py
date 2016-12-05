@@ -22,5 +22,5 @@ for i in range(20000):
         print("Gained {reward} points, total score: {total_reward}".format(
             reward=g.reward,
             total_reward=total_reward))
-    if g .done:
+    if g.done:
         g.reset()
