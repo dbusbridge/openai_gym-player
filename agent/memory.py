@@ -6,8 +6,6 @@ import config
 class Memory(config.AgentConfig):
     def __init__(self):
         self.memory = collections.deque()
-        self.replay_memory = config.AgentConfig.replay_memory
-        self.batch_size = config.AgentConfig.batch_size
         self.count = 0
 
     def store(self, s_t, a_t, r_t, s_t1, terminal):

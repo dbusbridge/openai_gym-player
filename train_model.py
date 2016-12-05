@@ -1,4 +1,5 @@
 import game
+import importlib as il
 import agent.agent as agent
 import tensorflow as tf
 
@@ -14,6 +15,8 @@ a = agent.Agent(sess=sess, game=g)
 total_reward = 0
 
 a.train()
+
+a.q_learning_mini_batch()
 
 
 for i in range(20000):

@@ -14,11 +14,6 @@ class Agent(config.AgentConfig):
         self.sess = sess
 
         # Learning configuration
-        self.gamma = config.AgentConfig.gamma
-        self.max_step = config.AgentConfig.max_step
-        self.learn_start = config.AgentConfig.learn_start
-        self.initial_epsilon = config.AgentConfig.initial_epsilon
-        self.final_epsilon = config.AgentConfig.final_epsilon
         self.epsilon = self.initial_epsilon
 
         # Take in the binary screen as x_t
@@ -65,7 +60,9 @@ class Agent(config.AgentConfig):
             s_t_b, a_t_b, r_t_b, s_t1_b, terminal_b = self.memory.mini_batch()
 
             # Get the estimated values of q for the next time step
-            q_t1_b = self.q_conv.eval({self.s: s_t1_b})
+            q_t1_b = self.q_conv.eval(
+                feed_dict={self.s: s_t1_b,
+                           self.keep_prob: self.keep_prob_config})
 
             # Coerce the terminal into a float binary array
             terminal_b = np.array(terminal_b) + 0.
@@ -88,9 +85,11 @@ class Agent(config.AgentConfig):
 
     def train(self):
 
-        self.sess.run(tf.initialize_all_variables())
+        self.sess.run(tf.global_variables_initializer())
 
         for self.step in range(1, self.max_step):
+
+            self.game.render()
 
             # Update probability of random action
             if (self.epsilon >
