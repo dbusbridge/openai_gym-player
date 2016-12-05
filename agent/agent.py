@@ -88,6 +88,8 @@ class Agent(config.AgentConfig):
 
     def train(self):
 
+        self.sess.run(tf.initialize_all_variables())
+
         for self.step in range(1, self.max_step):
 
             # Update probability of random action
