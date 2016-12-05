@@ -15,7 +15,7 @@ def multilayer_convnet(input_layer_shape,
     with tf.device(device_name_or_function=device):
         # Placeholders for feed and output
         s = tf.placeholder(tf.float32, shape=input_layer_shape)
-        q = tf.placeholder(tf.float32, shape=output_layer_shape)
+        q = tf.placeholder(tf.float32, shape=[None])
 
         # First convolutional layer: convolution weights + bias
         W_conv1 = nt.weight_variable([8, 8, 4, 32])

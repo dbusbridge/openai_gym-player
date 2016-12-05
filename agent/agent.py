@@ -53,7 +53,7 @@ class Agent(config.AgentConfig):
         self.train_step = tf.train.AdamOptimizer(1e-6).minimize(self.cost)
 
     def q_learning_mini_batch(self):
-        if self.memory.count < config.AgentConfig.history_length:
+        if self.memory.count < self.history_length:
             return
         else:
             # Pull the mini batch from memory
@@ -78,8 +78,10 @@ class Agent(config.AgentConfig):
             self.train_step.run(
                 feed_dict={
                     self.q: q_t_b,
-                    self.a: a_t_b,
-                    self.s: s_t_b})
+                    self.a: [self.hot_one_state(index=action)
+                             for action in a_t_b],
+                    self.s: s_t_b,
+                    self.keep_prob: self.keep_prob_config})
 
             self.update_count += 1
 
@@ -88,8 +90,8 @@ class Agent(config.AgentConfig):
         self.sess.run(tf.global_variables_initializer())
 
         for self.step in range(1, self.max_step):
-
-            self.game.render()
+            if self.game.do_render:
+                self.game.render()
 
             # Update probability of random action
             if (self.epsilon >
@@ -152,3 +154,9 @@ class Agent(config.AgentConfig):
 
         if self.step > self.explore_start:
             self.q_learning_mini_batch()
+
+    def hot_one_state(self, index):
+        array = np.zeros(self.game.action_space_size)
+        array[index] = 1.
+        return array
+

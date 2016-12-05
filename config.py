@@ -13,4 +13,4 @@ class AgentConfig(object):
 
 class GameConfig(object):
     environment = 'SpaceInvaders-v0'
-    do_render = True
+    do_render = False

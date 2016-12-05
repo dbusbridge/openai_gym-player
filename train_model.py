@@ -5,6 +5,9 @@ import tensorflow as tf
 
 sess = tf.InteractiveSession()
 
+il.reload(game)
+il.reload(agent)
+
 # Start the game
 g = game.Game()
 
@@ -17,7 +20,6 @@ total_reward = 0
 a.train()
 
 a.q_learning_mini_batch()
-
 
 for i in range(20000):
     g.render()
