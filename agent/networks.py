@@ -17,15 +17,12 @@ def multilayer_convnet(input_layer_shape,
         s = tf.placeholder(tf.float32, shape=input_layer_shape)
         q = tf.placeholder(tf.float32, shape=output_layer_shape)
 
-        # Reshape image for convolving
-        x_image = tf.reshape(s, [-1, 28, 28, 1])
-
         # First convolutional layer: convolution weights + bias
-        W_conv1 = nt.weight_variable([5, 5, 1, 32])
+        W_conv1 = nt.weight_variable([8, 8, 4, 32])
         b_conv1 = nt.bias_variable([32])
 
         # First convolutional layer: perform convolution + bias with relu
-        h_conv1 = tf.nn.relu(nt.conv2d(x_image, W_conv1) + b_conv1)
+        h_conv1 = tf.nn.relu(nt.conv2d(s, W_conv1) + b_conv1)
 
         # First convolutional layer: pooling
         h_pool1 = nt.max_pool_2x2(h_conv1)
@@ -41,10 +38,10 @@ def multilayer_convnet(input_layer_shape,
         h_pool2 = nt.max_pool_2x2(h_conv2)
 
         # Flatten pooled ready for linear transformation
-        h_pool2_flat = tf.reshape(h_pool2, [-1, 7 * 7 * 64])
+        h_pool2_flat = tf.reshape(h_pool2, [-1, 53 * 40 * 64])
 
         # First fully connected layer: linear transformation weights + bias
-        W_fc1 = nt.weight_variable([7 * 7 * 64, 1024])
+        W_fc1 = nt.weight_variable([53 * 40 * 64, 1024])
         b_fc1 = nt.bias_variable([1024])
 
         # First fully connected layer: perform linear transformation
@@ -56,8 +53,8 @@ def multilayer_convnet(input_layer_shape,
         h_fc1_drop = tf.nn.dropout(h_fc1, keep_prob)
 
         # Readout layer: linear transformation weights + bias
-        W_fc2 = nt.weight_variable([1024, 10])
-        b_fc2 = nt.bias_variable([10])
+        W_fc2 = nt.weight_variable([1024] + output_layer_shape[1:])
+        b_fc2 = nt.bias_variable(output_layer_shape[1:])
 
         # Readout layer: perform linear transformation + bias with relu
         q_conv = tf.matmul(h_fc1_drop, W_fc2) + b_fc2
