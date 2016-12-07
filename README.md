@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This repo contains code that trains a reinforcement learning algorithm on the [OpenAI Gym](https://gym.openai.com) environment [SpaceInvaders-v0](https://gym.openai.com/envs/SpaceInvaders-v0). It is loosely based on the repos:
+This repo contains code that trains a reinforcement learning algorithm on the [OpenAI Gym](https://gym.openai.com) environment [SpaceInvaders-v0](https://gym.openai.com/envs/SpaceInvaders-v0). It is inspired by the implementations (**not by me!**):
 
 + [DQN-tensorflow](https://github.com/devsisters/DQN-tensorflow)
 
