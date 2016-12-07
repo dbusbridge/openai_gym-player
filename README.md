@@ -8,6 +8,8 @@ This repo contains code that trains a reinforcement learning algorithm on the [O
 
 + [Deep Flappy Bird](https://github.com/yenchenlin/DeepLearningFlappyBird)
 
+Code is not yet fully functioning. A partially functioning version of the code can be found on the [basic_framework](https://github.com/dbusbridge/openai_gym-space_invaders/tree/basic_framework) branch.
+
 ## Environment details
 
 ### Challenge
