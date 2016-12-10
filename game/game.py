@@ -26,10 +26,10 @@ class Game(config.GameConfig):
         _, self.reward, self.terminal, self.info = self.new_game()
 
     def new_game(self):
-        self.s.screen = self.reset()
-        self.reward = 0
-        self.terminal = False
-        self.info = None
+        if self.lives() == 0:
+            self.s.screen = self.reset()
+        (self.s.screen, self.reward,
+         self.terminal, self.info) = self.env.step(self.action_space.sample())
         return self.training_screen(), self.reward, self.terminal, self.info
 
     def reset(self):
@@ -45,3 +45,6 @@ class Game(config.GameConfig):
             return self.s.to_binary().resize().screen
         else:
             return self.s.to_binary().screen
+
+    def lives(self):
+        return self.env.ale.lives()
