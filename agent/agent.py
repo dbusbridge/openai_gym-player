@@ -16,8 +16,8 @@ class Agent(config.AgentConfig):
         # Learning configuration
         self.epsilon = self.initial_epsilon
 
-        # Take in the binary screen as x_t
-        self.x_t = self.game.screen_binary()
+        # Take in the training screen as x_t
+        self.x_t = self.game.training_screen()
 
         # Make a history of screens, the size depends on config
         self.history = ah.History(x_t_init=self.x_t)
@@ -39,7 +39,7 @@ class Agent(config.AgentConfig):
         # Neural network
         # Shape
         self.input_layer_shape = (
-            [None] + list(self.game.screen_binary().shape) +
+            [None] + list(self.game.training_screen().shape) +
             [self.history.history_length])
         self.output_layer_shape = [None] + [self.game.action_space_size]
 
@@ -115,8 +115,8 @@ class Agent(config.AgentConfig):
             # Act
             x_t, r_t, terminal, info = self.game.step(a_t)
 
-            # Use the binary representation
-            x_bin_t = self.game.screen_binary()
+            # Use the training representation
+            x_bin_t = self.game.training_screen()
 
             # Observe
             self.observe(x_t=x_bin_t, r_t=r_t, a_t=a_t, terminal=terminal)

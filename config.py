@@ -15,3 +15,5 @@ class AgentConfig(object):
 class GameConfig(object):
     environment = 'SpaceInvaders-v0'
     do_render = False
+    resize_image = True
+    resize_shape = (84, 84)
