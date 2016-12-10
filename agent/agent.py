@@ -1,10 +1,12 @@
-import numpy as np
-import config
 import random
+
+import numpy as np
 import tensorflow as tf
-import agent.networks as nw
+
 import agent.history as ah
 import agent.memory as am
+import config
+import network.networks as nw
 
 
 class Agent(config.AgentConfig):

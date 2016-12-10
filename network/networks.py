@@ -1,6 +1,6 @@
 import functools
 import operator
-import agent.nettools as nt
+import network.nettools as nt
 import tensorflow as tf
 
 
