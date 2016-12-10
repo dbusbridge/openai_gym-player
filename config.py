@@ -4,14 +4,17 @@ class AgentConfig(object):
     replay_memory = 10
     batch_size = 5
     gamma = 0.99
-    explore_start = 1000
-    learn_start = 10000
+    explore_start = 500
+    learn_start = 2500
     max_step = 20000
     initial_epsilon = 1
     final_epsilon = 0.001
     keep_prob_config = 0.95
+    network_choice = 'DeepMind'
 
 
 class GameConfig(object):
     environment = 'SpaceInvaders-v0'
-    do_render = False
+    do_render = True
+    resize_image = True
+    resize_shape = (84, 84)

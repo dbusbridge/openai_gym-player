@@ -1,10 +1,12 @@
-import agent.nettools as nt
+import functools
+import operator
+import network.nettools as nt
 import tensorflow as tf
 
 
-def multilayer_convnet(input_layer_shape,
-                       output_layer_shape,
-                       device='/cpu:0'):
+def deepmnist_convnet(input_layer_shape,
+                      output_layer_shape,
+                      device='/cpu:0'):
     """Create a multilayer convolutional neural network.
     :param str device: The device to use for storing variables and computation.
         Either '/cpu:<n>' or '/gpu:<n>'. Defaults to '/cpu:<n>.
@@ -36,12 +38,16 @@ def multilayer_convnet(input_layer_shape,
 
         # Second convolutional layer: pooling
         h_pool2 = nt.max_pool_2x2(h_conv2)
+        h_pool2_size = functools.reduce(
+            operator.mul,
+            filter(None, h_pool2.get_shape().as_list()),
+            1)
 
         # Flatten pooled ready for linear transformation
-        h_pool2_flat = tf.reshape(h_pool2, [-1, 53 * 40 * 64])
+        h_pool2_flat = tf.reshape(h_pool2, [-1, h_pool2_size])
 
         # First fully connected layer: linear transformation weights + bias
-        W_fc1 = nt.weight_variable([53 * 40 * 64, 1024])
+        W_fc1 = nt.weight_variable([h_pool2_size, 1024])
         b_fc1 = nt.bias_variable([1024])
 
         # First fully connected layer: perform linear transformation

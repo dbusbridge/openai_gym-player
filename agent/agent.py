@@ -1,10 +1,10 @@
-import numpy as np
-import config
 import random
+import numpy as np
 import tensorflow as tf
-import agent.networks as nw
+import config
 import agent.history as ah
 import agent.memory as am
+import network.networks.network_switch as network_switch
 
 
 class Agent(config.AgentConfig):
@@ -16,8 +16,8 @@ class Agent(config.AgentConfig):
         # Learning configuration
         self.epsilon = self.initial_epsilon
 
-        # Take in the binary screen as x_t
-        self.x_t = self.game.screen_binary()
+        # Take in the training screen as x_t
+        self.x_t = self.game.training_screen()
 
         # Make a history of screens, the size depends on config
         self.history = ah.History(x_t_init=self.x_t)
@@ -39,25 +39,29 @@ class Agent(config.AgentConfig):
         # Neural network
         # Shape
         self.input_layer_shape = (
-            [None] + list(self.game.screen_binary().shape) +
+            [None] + list(self.game.training_screen().shape) +
             [self.history.history_length])
         self.output_layer_shape = [None] + [self.game.action_space_size]
+        self.network_switch = network_switch.NetworkSwitch(
+            input_layer_shape=self.input_layer_shape,
+            output_layer_shape=self.output_layer_shape,
+            device=self.device)
 
         # Variables
         with tf.device(self.device):
             self.a = tf.placeholder(
                 "float", [None, self.game.action_space_size])
             (self.s, self.q,
-             self.q_conv, self.keep_prob) = nw.multilayer_convnet(
-                input_layer_shape=self.input_layer_shape,
-                output_layer_shape=self.output_layer_shape,
-                device=self.device)
+             self.q_conv, self.keep_prob) = self.network_switch.network
         with tf.device(self.device):
             self.q_action = tf.argmax(self.q_conv, dimension=1)
             self.readout_action = tf.reduce_sum(tf.mul(self.q_conv, self.a),
                                                 reduction_indices=1)
             self.cost = tf.reduce_mean(tf.square(self.q - self.readout_action))
             self.train_step = tf.train.AdamOptimizer(1e-6).minimize(self.cost)
+
+        # Logging
+        self.max_ep_reward, self.min_ep_reward, self.avg_ep_reward = 0., 0., 0.
 
     def q_learning_mini_batch(self):
         if self.memory.count < self.history_length:
@@ -97,11 +101,9 @@ class Agent(config.AgentConfig):
         self.sess.run(tf.global_variables_initializer())
 
         for self.step in range(1, self.max_step):
-            if self.step % 100 == 0:
-                print(self.step)
 
-            if self.game.do_render:
-                self.game.render()
+            if self.game.s.do_render:
+                self.game.s.render()
 
             # Update probability of random action
             if (self.epsilon >
@@ -115,8 +117,8 @@ class Agent(config.AgentConfig):
             # Act
             x_t, r_t, terminal, info = self.game.step(a_t)
 
-            # Use the binary representation
-            x_bin_t = self.game.screen_binary()
+            # Use the training representation
+            x_bin_t = self.game.training_screen()
 
             # Observe
             self.observe(x_t=x_bin_t, r_t=r_t, a_t=a_t, terminal=terminal)
@@ -140,6 +142,9 @@ class Agent(config.AgentConfig):
 
             self.actions.append(a_t)
             self.total_reward += r_t
+
+            if self.step % 100 == 0:
+                self.print_status()
 
     def predict(self, s_t):
         # Do a random action with probability epsilon
@@ -173,3 +178,18 @@ class Agent(config.AgentConfig):
         array[index] = 1.
         return array
 
+    def print_status(self):
+
+        if len(self.ep_rewards) is not 0:
+            # Logging
+            self.max_ep_reward = np.max(self.ep_rewards)
+            self.min_ep_reward = np.min(self.ep_rewards)
+            self.avg_ep_reward = np.mean(self.ep_rewards)
+
+        if self.update_count is not 0:
+            self.avg_loss = self.total_loss / self.update_count
+            self.avg_q = self.total_q / self.update_count
+
+        self.avg_reward = self.total_reward / self.step
+
+        print("step: {step}".format(step=self.step))
