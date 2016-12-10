@@ -1,7 +1,7 @@
-import game
 import importlib as il
-import agent.agent as agent
 import tensorflow as tf
+import agent.agent as agent
+import game.game as game
 
 sess = tf.InteractiveSession()
 

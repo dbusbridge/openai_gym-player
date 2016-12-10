@@ -100,8 +100,8 @@ class Agent(config.AgentConfig):
             if self.step % 100 == 0:
                 print(self.step)
 
-            if self.game.do_render:
-                self.game.render()
+            if self.game.s.do_render:
+                self.game.s.render()
 
             # Update probability of random action
             if (self.epsilon >
