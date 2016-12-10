@@ -10,11 +10,11 @@ class AgentConfig(object):
     initial_epsilon = 1
     final_epsilon = 0.001
     keep_prob_config = 0.95
-    network_choice = 'DeepMNIST'
+    network_choice = 'DeepMind'
 
 
 class GameConfig(object):
     environment = 'SpaceInvaders-v0'
-    do_render = True
+    do_render = False
     resize_image = True
     resize_shape = (84, 84)

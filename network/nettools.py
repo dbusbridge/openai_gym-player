@@ -27,16 +27,17 @@ def bias_variable(shape, value=0.1):
     return tf.Variable(initial)
 
 
-def conv2d(x, W):
+def conv2d(x, W, stride=1):
     """
     Create the 2d convolution of an object x with a weight matrix W.
     :param tf.Tensor x: The left component of the convolution.
     :param tf.Tensor W: The right component of the convolution. This is the
         moving filter.
+    :param int stride: the stride side for the convoltion
     :return: The convolved object.
     :rtype: tf.Tensor.
     """
-    return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
+    return tf.nn.conv2d(x, W, strides=[1, stride, stride, 1], padding='SAME')
 
 
 def max_pool_2x2(x):

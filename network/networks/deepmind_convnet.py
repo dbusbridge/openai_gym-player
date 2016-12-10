@@ -30,21 +30,21 @@ def deepmind_convnet(input_layer_shape,
         # with the input image and applies a rectifier nonlinearity
         W_conv1 = nt.weight_variable([8, 8, 4, 32])
         b_conv1 = nt.bias_variable([32])
-        h_conv1 = tf.nn.relu(nt.conv2d(s, W_conv1) + b_conv1)
+        h_conv1 = tf.nn.relu(nt.conv2d(s, W_conv1, stride=4) + b_conv1)
 
         # Second convolutional layer
         # The second hidden layer convolves 64 filters of 4 x 4 with
         # stride 2, again followed by a rectifier nonlinearity.
-        W_conv2 = nt.weight_variable([4, 4, 2, 64])
+        W_conv2 = nt.weight_variable([4, 4, 32, 64])
         b_conv2 = nt.bias_variable([64])
-        h_conv2 = tf.nn.relu(nt.conv2d(h_conv1, W_conv2) + b_conv2)
+        h_conv2 = tf.nn.relu(nt.conv2d(h_conv1, W_conv2, stride=2) + b_conv2)
 
         # Third convolutional layer
         # This is followed by a third convolutional layer that convolves 64
         # filters of 3 x 3 with stride 1 followed by a rectifier.
-        W_conv3 = nt.weight_variable([3, 3, 1, 64])
+        W_conv3 = nt.weight_variable([3, 3, 64, 64])
         b_conv3 = nt.bias_variable([64])
-        h_conv3 = tf.nn.relu(nt.conv2d(h_conv2, W_conv3) + b_conv3)
+        h_conv3 = tf.nn.relu(nt.conv2d(h_conv2, W_conv3, stride=1) + b_conv3)
 
         # The final hidden layer is fully-connected and
         # consists of 512 rectifier units.
