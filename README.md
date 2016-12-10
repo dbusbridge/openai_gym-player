@@ -2,13 +2,11 @@
 
 ## Introduction
 
-This repo contains code that trains a reinforcement learning algorithm on the [OpenAI Gym](https://gym.openai.com) environment [SpaceInvaders-v0](https://gym.openai.com/envs/SpaceInvaders-v0). It is inspired by the implementations (**not by me!**):
+This repo contains code that trains a reinforcement learning algorithm on the [OpenAI Gym](https://gym.openai.com) environment [SpaceInvaders-v0](https://gym.openai.com/envs/SpaceInvaders-v0) (although you can alter the environment in the config file and it *should* all work fine; nothing depends on the environment except the assumption of a two dimensional observation space and a one dimensional control space). It is inspired by the implementations (**not by me!**):
 
 + [DQN-tensorflow](https://github.com/devsisters/DQN-tensorflow)
 
 + [Deep Flappy Bird](https://github.com/yenchenlin/DeepLearningFlappyBird)
-
-Code is not yet fully functioning. A partially functioning version of the code can be found on the [basic_framework](https://github.com/dbusbridge/openai_gym-space_invaders/tree/basic_framework) branch.
 
 ## Environment details
 
