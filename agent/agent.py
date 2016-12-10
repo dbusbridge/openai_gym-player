@@ -1,12 +1,10 @@
 import random
-
 import numpy as np
 import tensorflow as tf
-
+import config
 import agent.history as ah
 import agent.memory as am
-import config
-import network.networks as nw
+import network.networks.multilayer_convnet as mlc
 
 
 class Agent(config.AgentConfig):
@@ -50,7 +48,7 @@ class Agent(config.AgentConfig):
             self.a = tf.placeholder(
                 "float", [None, self.game.action_space_size])
             (self.s, self.q,
-             self.q_conv, self.keep_prob) = nw.multilayer_convnet(
+             self.q_conv, self.keep_prob) = mlc.multilayer_convnet(
                 input_layer_shape=self.input_layer_shape,
                 output_layer_shape=self.output_layer_shape,
                 device=self.device)

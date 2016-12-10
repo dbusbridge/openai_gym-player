@@ -1,5 +1,4 @@
 import gym
-# from matplotlib import pyplot as plt
 import config
 import numpy as np
 import game.screen as screen
