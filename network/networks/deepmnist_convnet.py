@@ -4,9 +4,9 @@ import network.nettools as nt
 import tensorflow as tf
 
 
-def multilayer_convnet(input_layer_shape,
-                       output_layer_shape,
-                       device='/cpu:0'):
+def deepmnist_convnet(input_layer_shape,
+                      output_layer_shape,
+                      device='/cpu:0'):
     """Create a multilayer convolutional neural network.
     :param str device: The device to use for storing variables and computation.
         Either '/cpu:<n>' or '/gpu:<n>'. Defaults to '/cpu:<n>.

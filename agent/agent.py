@@ -4,7 +4,7 @@ import tensorflow as tf
 import config
 import agent.history as ah
 import agent.memory as am
-import network.networks.multilayer_convnet as mlc
+import network.networks.network_switch as network_switch
 
 
 class Agent(config.AgentConfig):
@@ -42,16 +42,17 @@ class Agent(config.AgentConfig):
             [None] + list(self.game.training_screen().shape) +
             [self.history.history_length])
         self.output_layer_shape = [None] + [self.game.action_space_size]
+        self.network_switch = network_switch.NetworkSwitch(
+            input_layer_shape=self.input_layer_shape,
+            output_layer_shape=self.output_layer_shape,
+            device=self.device)
 
         # Variables
         with tf.device(self.device):
             self.a = tf.placeholder(
                 "float", [None, self.game.action_space_size])
             (self.s, self.q,
-             self.q_conv, self.keep_prob) = mlc.multilayer_convnet(
-                input_layer_shape=self.input_layer_shape,
-                output_layer_shape=self.output_layer_shape,
-                device=self.device)
+             self.q_conv, self.keep_prob) = self.network_switch.network
         with tf.device(self.device):
             self.q_action = tf.argmax(self.q_conv, dimension=1)
             self.readout_action = tf.reduce_sum(tf.mul(self.q_conv, self.a),

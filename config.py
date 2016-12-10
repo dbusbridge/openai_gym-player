@@ -10,6 +10,7 @@ class AgentConfig(object):
     initial_epsilon = 1
     final_epsilon = 0.001
     keep_prob_config = 0.95
+    network_choice = 'DeepMNIST'
 
 
 class GameConfig(object):
