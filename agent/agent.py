@@ -37,20 +37,27 @@ class Agent(config.AgentConfig):
         self.ep_rewards = []
 
         # Neural network
+        # Shape
         self.input_layer_shape = (
             [None] + list(self.game.screen_binary().shape) +
             [self.history.history_length])
         self.output_layer_shape = [None] + [self.game.action_space_size]
-        self.a = tf.placeholder("float", [None, self.game.action_space_size])
-        self.s, self.q, self.q_conv, self.keep_prob = nw.multilayer_convnet(
-            input_layer_shape=self.input_layer_shape,
-            output_layer_shape=self.output_layer_shape)
-        self.q_action = tf.argmax(self.q_conv, dimension=1)
 
-        self.readout_action = tf.reduce_sum(tf.mul(self.q_conv, self.a),
-                                            reduction_indices=1)
-        self.cost = tf.reduce_mean(tf.square(self.q - self.readout_action))
-        self.train_step = tf.train.AdamOptimizer(1e-6).minimize(self.cost)
+        # Variables
+        with tf.device(self.device):
+            self.a = tf.placeholder(
+                "float", [None, self.game.action_space_size])
+            (self.s, self.q,
+             self.q_conv, self.keep_prob) = nw.multilayer_convnet(
+                input_layer_shape=self.input_layer_shape,
+                output_layer_shape=self.output_layer_shape,
+                device=self.device)
+        with tf.device(self.device):
+            self.q_action = tf.argmax(self.q_conv, dimension=1)
+            self.readout_action = tf.reduce_sum(tf.mul(self.q_conv, self.a),
+                                                reduction_indices=1)
+            self.cost = tf.reduce_mean(tf.square(self.q - self.readout_action))
+            self.train_step = tf.train.AdamOptimizer(1e-6).minimize(self.cost)
 
     def q_learning_mini_batch(self):
         if self.memory.count < self.history_length:
@@ -90,6 +97,9 @@ class Agent(config.AgentConfig):
         self.sess.run(tf.global_variables_initializer())
 
         for self.step in range(1, self.max_step):
+            if self.step % 100 == 0:
+                print(self.step)
+
             if self.game.do_render:
                 self.game.render()
 
@@ -113,6 +123,7 @@ class Agent(config.AgentConfig):
 
             # If we died
             if terminal:
+                print("died")
                 # New random game
                 x_t, r_t, terminal, info = self.game.new_game()
                 # One more game completed
@@ -136,7 +147,9 @@ class Agent(config.AgentConfig):
             action = self.game.action_space.sample()
         # Do an action defined by taking the largest estimated Q value
         else:
-            action = self.q_action.eval({self.s: [s_t]})[0]
+            action = self.q_action.eval(
+                feed_dict={self.s: [s_t],
+                           self.keep_prob: self.keep_prob_config})[0]
 
         return action
 

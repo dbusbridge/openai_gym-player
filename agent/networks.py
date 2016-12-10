@@ -7,7 +7,7 @@ def multilayer_convnet(input_layer_shape,
                        device='/cpu:0'):
     """Create a multilayer convolutional neural network.
     :param str device: The device to use for storing variables and computation.
-        Either '/cpu:<n>' or '/cpu:<n>'. Defaults to '/cpu:<n>.
+        Either '/cpu:<n>' or '/gpu:<n>'. Defaults to '/cpu:<n>.
     :return: A set of TensorFlow tensors that serve as inputs, controllers and
         outputs of the network.
     :rtype: (tf.Tensor, tf.Tensor, tf.Tensor, tf.Tensor).

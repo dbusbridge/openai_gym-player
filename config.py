@@ -1,4 +1,5 @@
 class AgentConfig(object):
+    device = '/gpu:0'
     history_length = 4
     replay_memory = 10
     batch_size = 5
