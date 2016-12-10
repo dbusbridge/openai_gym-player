@@ -60,6 +60,9 @@ class Agent(config.AgentConfig):
             self.cost = tf.reduce_mean(tf.square(self.q - self.readout_action))
             self.train_step = tf.train.AdamOptimizer(1e-6).minimize(self.cost)
 
+        # Logging
+        self.max_ep_reward, self.min_ep_reward, self.avg_ep_reward = 0., 0., 0.
+
     def q_learning_mini_batch(self):
         if self.memory.count < self.history_length:
             return
@@ -98,8 +101,6 @@ class Agent(config.AgentConfig):
         self.sess.run(tf.global_variables_initializer())
 
         for self.step in range(1, self.max_step):
-            if self.step % 100 == 0:
-                print(self.step)
 
             if self.game.s.do_render:
                 self.game.s.render()
@@ -142,6 +143,9 @@ class Agent(config.AgentConfig):
             self.actions.append(a_t)
             self.total_reward += r_t
 
+            if self.step % 100 == 0:
+                self.print_status()
+
     def predict(self, s_t):
         # Do a random action with probability epsilon
         if random.random() < self.epsilon:
@@ -174,3 +178,18 @@ class Agent(config.AgentConfig):
         array[index] = 1.
         return array
 
+    def print_status(self):
+
+        if len(self.ep_rewards) is not 0:
+            # Logging
+            self.max_ep_reward = np.max(self.ep_rewards)
+            self.min_ep_reward = np.min(self.ep_rewards)
+            self.avg_ep_reward = np.mean(self.ep_rewards)
+
+        if self.update_count is not 0:
+            self.avg_loss = self.total_loss / self.update_count
+            self.avg_q = self.total_q / self.update_count
+
+        self.avg_reward = self.total_reward / self.step
+
+        print("step: {step}".format(step=self.step))
