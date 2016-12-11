@@ -246,7 +246,7 @@ class Agent(config.AgentConfig):
             self.phase = 'observing'
         elif self.step < self.learn_start:
             self.phase = 'exploring'
-        elif self.step < self.learn_start:
+        else:
             self.phase = 'training'
 
         status_dict = collections.OrderedDict([
