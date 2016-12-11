@@ -1,8 +1,8 @@
 class AgentConfig(object):
     device = '/gpu:0'
     history_length = 4
-    replay_memory = 10
-    batch_size = 5
+    replay_memory = 1000000
+    batch_size = 32
     gamma = 0.99
     explore_start = 1000
     learn_start = 2000
