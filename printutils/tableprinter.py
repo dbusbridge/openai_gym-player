@@ -1,5 +1,5 @@
 import tabulate
-
+import numpy as np
 
 class TablePrinter:
     def __init__(self, frame, rows_between_header=10):
@@ -47,3 +47,19 @@ class TablePrinter:
             return '\n'.join([self.tab_header()] + rows_out)
         else:
             return '\n'.join(rows_out)
+
+    def print_width(self):
+        return len(self.tab_all().split('\n')[2])
+
+    def break_out(self, divider='-'):
+        return divider * self.print_width()
+
+    def msg_out(self, msg, divider='-'):
+        print_width = len(self.tab_all().split('\n')[2])
+        msg_width = len(msg)
+        divider_width_left = int(np.floor((print_width - msg_width - 2) / 2))
+        divider_width_right = print_width - 2 - divider_width_left - msg_width
+
+        return "{dl} {m} {dr}".format(dl=divider * divider_width_left,
+                                      m=msg,
+                                      dr=divider * divider_width_right)

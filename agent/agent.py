@@ -1,3 +1,4 @@
+import os
 import random
 import numpy as np
 import pandas as pd
@@ -7,6 +8,7 @@ import agent.history as ah
 import agent.memory as am
 import network.networks.network_switch as network_switch
 import printutils.tableprinter as tp
+
 
 class Agent(config.AgentConfig):
     def __init__(self, game, sess):
@@ -65,6 +67,32 @@ class Agent(config.AgentConfig):
         self.max_ep_reward, self.min_ep_reward, self.avg_ep_reward = 0., 0., 0.
         self.avg_loss, self.avg_q, self.avg_reward = 0., 0., 0.
         self.printer = tp.TablePrinter(frame=self.status_frame())
+
+        # Saving
+        self.saver = tf.train.Saver()
+
+        # Make sure the saving directory exists
+        if not os.path.exists(self.model_dir):
+            print(
+                self.printer.msg_out(
+                    msg="Creating model dir {path}".format(
+                        path=self.model_dir)))
+            os.makedirs(self.model_dir)
+
+        # Restoring
+        if self.restore_from_saved_model:
+            restore_path = "{dir}/{steps}.ckpt".format(
+                    dir=self.model_dir,
+                    steps=self.model_restore_steps)
+
+            self.saver.restore(
+                sess=self.sess,
+                save_path=restore_path)
+
+            print(
+                self.printer.msg_out(
+                    msg="Model restored from {path}".format(
+                        path=restore_path)))
 
     def q_learning_mini_batch(self):
         if self.memory.count < self.history_length:
@@ -128,7 +156,7 @@ class Agent(config.AgentConfig):
 
             # If we died
             if terminal:
-                print("died")
+                print(self.printer.msg_out(msg="Died"))
                 # New random game
                 x_t, r_t, terminal, info = self.game.new_game()
                 # One more game completed
@@ -149,6 +177,18 @@ class Agent(config.AgentConfig):
             if self.step % 100 == 0:
                 self.printer.new_rows(frame=self.status_frame())
                 print(self.printer.tab_out())
+
+            if self.step % self.steps_save == 0:
+                save_path = "{dir}/{steps}.ckpt".format(
+                    dir=self.model_dir,
+                    steps=self.step)
+                self.saver.save(sess=self.sess,
+                                save_path=save_path)
+
+                print(
+                    self.printer.msg_out(
+                        msg="Model saved to {path}".format(
+                            path=save_path)))
 
     def predict(self, s_t):
         # Do a random action with probability epsilon
@@ -197,9 +237,13 @@ class Agent(config.AgentConfig):
             self.avg_reward = self.total_reward / self.step
 
         status_dict = {
-            'max_ep_reward': self.max_ep_reward,
-            'min_ep_reward': self.min_ep_reward,
-            'avg_ep_reward': self.avg_ep_reward
+            'lives': self.game.lives(),
+            'max(ep rew)': self.max_ep_reward,
+            'min(ep rew)': self.min_ep_reward,
+            'avg(ep rew)': self.avg_ep_reward
         }
 
         return pd.DataFrame(data=status_dict, index=[self.step])
+
+
+
