@@ -11,7 +11,7 @@ class AgentConfig(object):
     final_epsilon = 0.001
     keep_prob_config = 0.95
     network_choice = 'DeepMind'
-    restore_from_saved_model = True
+    restore_from_saved_model = False
     model_dir = 'saved_models/Breakout-v0'
     model_restore_steps = 400000
     steps_save = 100000
