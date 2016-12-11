@@ -1,7 +1,5 @@
 import tabulate
 import numpy as np
-import pandas as pd
-
 
 class TablePrinter:
     def __init__(self, frame, rows_between_header=10):
@@ -50,18 +48,18 @@ class TablePrinter:
         else:
             return '\n'.join(rows_out)
 
-df = pd.DataFrame({'a': np.random.normal(size=10),
-                   'b': np.random.normal(size=10)})
+    def print_width(self):
+        return len(self.tab_all().split('\n')[2])
 
-tp = TablePrinter(frame=df)
+    def break_out(self, divider='-'):
+        return divider * self.print_width()
 
-for i in range(100):
-    new_df = pd.DataFrame({'a': np.random.normal(size=1),
-                           'b': np.random.normal(size=1)},
-                          index=pd.Series([i]))
+    def msg_out(self, msg, divider='-'):
+        print_width = len(self.tab_all().split('\n')[2])
+        msg_width = len(msg)
+        divider_width_left = int(np.floor((print_width - msg_width - 2) / 2))
+        divider_width_right = print_width - 2 - divider_width_left - msg_width
 
-    tp.new_rows(frame=new_df)
-    print(tp.tab_out())
-
-
-tp.tab_last_n(n=tp.rows_added_since_last_print)
+        return "{dl} {m} {dr}".format(dl=divider * divider_width_left,
+                                      m=msg,
+                                      dr=divider * divider_width_right)
