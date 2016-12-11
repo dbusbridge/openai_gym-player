@@ -18,5 +18,3 @@ g = game.Game()
 a = agent.Agent(sess=sess, game=g)
 
 a.train()
-
-

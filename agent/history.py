@@ -17,13 +17,17 @@ class History(config.AgentConfig):
             arrays=(x_t_init, ) * self.history_length,
             axis=2)
 
-        # Set s_t = s_t_init. These are seperate objects in case we need to
+        # Set s_t = s_t_init. These are separate objects in case we need to
         # reset later
         self.s_t = self.s_t_init
 
     def add(self, observation):
         self.s_t[:, :, :-1] = self.s_t[:, :, 1:]
         self.s_t[:, :, -1] = observation
+        # self.s_t = np.append(
+        #     np.reshape(observation,
+        #                newshape=list(observation.shape) + [1]),
+        #     self.s_t[:, :, :3], axis=2)
 
     def reset(self):
         self.s_t = self.s_t_init
