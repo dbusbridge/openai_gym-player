@@ -151,12 +151,8 @@ class Agent(config.AgentConfig):
             a_t = self.predict(self.history.get())
             # Act
             x_t, r_t, terminal, info = self.game.step(a_t)
-
-            # Use the training representation
-            x_bin_t = self.game.training_screen()
-
             # Observe
-            self.observe(x_t=x_bin_t, r_t=r_t, a_t=a_t, terminal=terminal)
+            self.observe(x_t=x_t, r_t=r_t, a_t=a_t, terminal=terminal)
 
             # If we died
             if terminal:
