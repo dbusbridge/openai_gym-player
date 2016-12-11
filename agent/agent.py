@@ -1,11 +1,12 @@
 import random
 import numpy as np
+import pandas as pd
 import tensorflow as tf
 import config
 import agent.history as ah
 import agent.memory as am
 import network.networks.network_switch as network_switch
-
+import printutils.tableprinter as tp
 
 class Agent(config.AgentConfig):
     def __init__(self, game, sess):
@@ -62,6 +63,8 @@ class Agent(config.AgentConfig):
 
         # Logging
         self.max_ep_reward, self.min_ep_reward, self.avg_ep_reward = 0., 0., 0.
+        self.avg_loss, self.avg_q, self.avg_reward = 0., 0., 0.
+        self.printer = tp.TablePrinter(frame=self.status_frame())
 
     def q_learning_mini_batch(self):
         if self.memory.count < self.history_length:
@@ -144,7 +147,8 @@ class Agent(config.AgentConfig):
             self.total_reward += r_t
 
             if self.step % 100 == 0:
-                self.print_status()
+                self.printer.new_rows(frame=self.status_frame())
+                print(self.printer.tab_out())
 
     def predict(self, s_t):
         # Do a random action with probability epsilon
@@ -178,8 +182,7 @@ class Agent(config.AgentConfig):
         array[index] = 1.
         return array
 
-    def print_status(self):
-
+    def status_frame(self):
         if len(self.ep_rewards) is not 0:
             # Logging
             self.max_ep_reward = np.max(self.ep_rewards)
@@ -190,6 +193,13 @@ class Agent(config.AgentConfig):
             self.avg_loss = self.total_loss / self.update_count
             self.avg_q = self.total_q / self.update_count
 
-        self.avg_reward = self.total_reward / self.step
+        if self.step is not 0:
+            self.avg_reward = self.total_reward / self.step
 
-        print("step: {step}".format(step=self.step))
+        status_dict = {
+            'max_ep_reward': self.max_ep_reward,
+            'min_ep_reward': self.min_ep_reward,
+            'avg_ep_reward': self.avg_ep_reward
+        }
+
+        return pd.DataFrame(data=status_dict, index=[self.step])

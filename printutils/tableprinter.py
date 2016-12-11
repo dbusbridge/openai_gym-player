@@ -1,6 +1,4 @@
 import tabulate
-import numpy as np
-import pandas as pd
 
 
 class TablePrinter:
@@ -49,19 +47,3 @@ class TablePrinter:
             return '\n'.join([self.tab_header()] + rows_out)
         else:
             return '\n'.join(rows_out)
-
-df = pd.DataFrame({'a': np.random.normal(size=10),
-                   'b': np.random.normal(size=10)})
-
-tp = TablePrinter(frame=df)
-
-for i in range(100):
-    new_df = pd.DataFrame({'a': np.random.normal(size=1),
-                           'b': np.random.normal(size=1)},
-                          index=pd.Series([i]))
-
-    tp.new_rows(frame=new_df)
-    print(tp.tab_out())
-
-
-tp.tab_last_n(n=tp.rows_added_since_last_print)
