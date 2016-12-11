@@ -4,7 +4,9 @@ dependencies:
   - matplotlib
   - nomkl
   - numpy
+  - pandas
   - pip
+  - tabulate
   - menpo::opencv3==3.1.0
   - asmeurer::pango # Because of undefined symbol error - see https://github.com/ContinuumIO/anaconda-issues/issues/368
   - pip:
