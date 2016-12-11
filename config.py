@@ -4,8 +4,8 @@ class AgentConfig(object):
     replay_memory = 1000000
     batch_size = 32
     gamma = 0.99
-    explore_start = 1000
-    learn_start = 2000
+    explore_start = 250000
+    learn_start = 500000
     max_step = 2000000
     initial_epsilon = 1
     final_epsilon = 0.001
