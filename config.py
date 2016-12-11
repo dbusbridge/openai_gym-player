@@ -4,8 +4,8 @@ class AgentConfig(object):
     replay_memory = 10
     batch_size = 5
     gamma = 0.99
-    explore_start = 100000
-    learn_start = 500000
+    explore_start = 1000
+    learn_start = 2000
     max_step = 2000000
     initial_epsilon = 1
     final_epsilon = 0.001
@@ -15,6 +15,7 @@ class AgentConfig(object):
     model_dir = 'saved_models/Breakout-v0'
     model_restore_steps = 400000
     steps_save = 100000
+    epoch_size = 250000
 
 
 class GameConfig(object):

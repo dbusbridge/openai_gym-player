@@ -1,3 +1,4 @@
+import collections
 import os
 import random
 import numpy as np
@@ -60,13 +61,14 @@ class Agent(config.AgentConfig):
             self.q_action = tf.argmax(self.q_conv, dimension=1)
             self.readout_action = tf.reduce_sum(tf.mul(self.q_conv, self.a),
                                                 reduction_indices=1)
-            self.cost = tf.reduce_mean(tf.square(self.q - self.readout_action))
-            self.train_step = tf.train.AdamOptimizer(1e-6).minimize(self.cost)
+            self.loss = tf.reduce_mean(tf.square(self.q - self.readout_action))
+            self.train_step = tf.train.AdamOptimizer(1e-6).minimize(self.loss)
 
         # Logging
         self.max_ep_reward, self.min_ep_reward, self.avg_ep_reward = 0., 0., 0.
         self.avg_loss, self.avg_q, self.avg_reward = 0., 0., 0.
         self.printer = tp.TablePrinter(frame=self.status_frame())
+        self.phase = 'training'
 
         # Saving
         self.saver = tf.train.Saver()
@@ -117,14 +119,16 @@ class Agent(config.AgentConfig):
 
             # Perform gradient step so that next time our estimate of q is
             # better
-            self.train_step.run(
-                feed_dict={
-                    self.q: q_t_b,
-                    self.a: [self.hot_one_state(index=action)
-                             for action in a_t_b],
-                    self.s: s_t_b,
-                    self.keep_prob: self.keep_prob_config})
+            _, q_t, loss = self.sess.run(
+                [self.train_step, self.q_conv, self.loss],
+                feed_dict={self.q: q_t_b,
+                           self.a: [self.hot_one_state(index=action)
+                                    for action in a_t_b],
+                           self.s: s_t_b,
+                           self.keep_prob: self.keep_prob_config})
 
+            self.total_loss += loss
+            self.total_q += q_t.mean()
             self.update_count += 1
 
     def train(self):
@@ -236,14 +240,28 @@ class Agent(config.AgentConfig):
         if self.step is not 0:
             self.avg_reward = self.total_reward / self.step
 
-        status_dict = {
-            'lives': self.game.lives(),
-            'max(ep rew)': self.max_ep_reward,
-            'min(ep rew)': self.min_ep_reward,
-            'avg(ep rew)': self.avg_ep_reward
-        }
+        self.epochs_completed = self.step / self.epoch_size
 
-        return pd.DataFrame(data=status_dict, index=[self.step])
+        if self.step < self.explore_start:
+            self.phase = 'observing'
+        elif self.step < self.learn_start:
+            self.phase = 'exploring'
+        elif self.step < self.learn_start:
+            self.phase = 'training'
 
+        status_dict = collections.OrderedDict([
+            ('step', self.step),
+            ('epoch', self.epochs_completed),
+            ('phase', self.phase),
+            ('lives', self.game.lives()),
+            ('max(ep rew)', self.max_ep_reward),
+            ('min(ep rew)', self.min_ep_reward),
+            ('avg(ep rew)', self.avg_ep_reward),
+            ('avg(loss)', self.avg_loss),
+            ('avg(q)', self.avg_q)
+        ])
 
-
+        return pd.DataFrame(
+            data=status_dict,
+            columns=status_dict.keys(),
+            index=[1]).set_index('step')
